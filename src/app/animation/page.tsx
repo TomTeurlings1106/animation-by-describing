@@ -704,9 +704,6 @@ export default function VideoAnimationStoryPage() {
 	const [phase, setPhase] = useState<Phase>("hook")
 	const [loopKey, setLoopKey] = useState(0)
 	const [mode, setMode] = useState<"loop" | "slides">("loop")
-	const [feedbackOpen, setFeedbackOpen] = useState(false)
-	const [feedbackText, setFeedbackText] = useState("")
-	const [feedbackSent, setFeedbackSent] = useState(false)
 
 	useEffect(() => {
 		const html = document.documentElement
@@ -827,7 +824,7 @@ export default function VideoAnimationStoryPage() {
 			/>
 
 			{/* LinkedIn CTA */}
-			<div className='absolute top-5 left-6 z-20'>
+			<div className='absolute top-5 left-6 z-20 flex flex-col gap-1.5'>
 				<a
 					href='https://www.linkedin.com/in/tom-teurlings-ab791317b/'
 					target='_blank'
@@ -842,6 +839,14 @@ export default function VideoAnimationStoryPage() {
 						<path d='M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z'/>
 					</svg>
 					Connect and see more like this
+				</a>
+				<a
+					href='https://www.linkedin.com/in/tom-teurlings-ab791317b/'
+					target='_blank'
+					rel='noopener noreferrer'
+					className='pl-1 text-xs transition-opacity hover:opacity-70'
+					style={{ color: CORAL }}>
+					Improvements? Send me a message on LinkedIn
 				</a>
 			</div>
 
@@ -891,79 +896,6 @@ export default function VideoAnimationStoryPage() {
 					</m.p>
 				)}
 			</AnimatePresence>
-
-			{/* Feedback widget */}
-			<div className='absolute bottom-6 left-6 z-20'>
-				<AnimatePresence mode='wait'>
-					{feedbackSent ? (
-						<m.p
-							key='sent'
-							initial={{ opacity: 0, y: 4 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0 }}
-							className='text-xs font-medium'
-							style={{ color: CORAL }}>
-							Copied! Paste it in the LinkedIn message ↗
-						</m.p>
-					) : feedbackOpen ? (
-						<m.div
-							key='form'
-							initial={{ opacity: 0, y: 8 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 4 }}
-							transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-							className='flex flex-col gap-2'
-							style={{ width: 260 }}>
-							<textarea
-								autoFocus
-								placeholder='What could be better?'
-								value={feedbackText}
-								onChange={(e) => setFeedbackText(e.target.value)}
-								rows={3}
-								className='w-full resize-none rounded-xl px-3 py-2.5 text-xs leading-relaxed outline-none'
-								style={{
-									background: "rgba(26,24,23,0.06)",
-									border: "1px solid rgba(26,24,23,0.12)",
-									color: CHARCOAL,
-									fontFamily: "inherit"
-								}}
-							/>
-							<div className='flex items-center gap-2'>
-								<button
-									onClick={() => {
-										if (!feedbackText.trim()) return
-										navigator.clipboard.writeText(feedbackText).catch(() => {})
-										window.open("https://www.linkedin.com/in/tom-teurlings-ab791317b/", "_blank")
-										setFeedbackSent(true)
-										setFeedbackText("")
-										setTimeout(() => { setFeedbackSent(false); setFeedbackOpen(false) }, 4000)
-									}}
-									className='flex-1 rounded-full py-1.5 text-xs font-semibold transition-opacity hover:opacity-80'
-									style={{ background: "#0A66C2", color: "white" }}>
-									Send on LinkedIn
-								</button>
-								<button
-									onClick={() => { setFeedbackOpen(false); setFeedbackText("") }}
-									className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
-									style={{ background: "rgba(26,24,23,0.06)", color: MUTED, border: "1px solid rgba(26,24,23,0.09)" }}>
-									Cancel
-								</button>
-							</div>
-						</m.div>
-					) : (
-						<m.button
-							key='trigger'
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							onClick={() => setFeedbackOpen(true)}
-							className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
-							style={{ background: "rgba(26,24,23,0.06)", color: MUTED, border: "1px solid rgba(26,24,23,0.09)" }}>
-							💬 What could be better?
-						</m.button>
-					)}
-				</AnimatePresence>
-			</div>
 
 			{/* Controls: Mode toggle + Replay */}
 			<div className='absolute bottom-6 right-6 z-20 flex items-center gap-2'>
