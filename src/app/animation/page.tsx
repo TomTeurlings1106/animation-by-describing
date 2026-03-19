@@ -704,6 +704,9 @@ export default function VideoAnimationStoryPage() {
 	const [phase, setPhase] = useState<Phase>("hook")
 	const [loopKey, setLoopKey] = useState(0)
 	const [mode, setMode] = useState<"loop" | "slides">("loop")
+	const [feedbackOpen, setFeedbackOpen] = useState(false)
+	const [feedbackText, setFeedbackText] = useState("")
+	const [feedbackSent, setFeedbackSent] = useState(false)
 
 	useEffect(() => {
 		const html = document.documentElement
@@ -888,6 +891,79 @@ export default function VideoAnimationStoryPage() {
 					</m.p>
 				)}
 			</AnimatePresence>
+
+			{/* Feedback widget */}
+			<div className='absolute bottom-6 left-6 z-20'>
+				<AnimatePresence mode='wait'>
+					{feedbackSent ? (
+						<m.p
+							key='sent'
+							initial={{ opacity: 0, y: 4 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0 }}
+							className='text-xs font-medium'
+							style={{ color: CORAL }}>
+							Copied! Paste it in the LinkedIn message ↗
+						</m.p>
+					) : feedbackOpen ? (
+						<m.div
+							key='form'
+							initial={{ opacity: 0, y: 8 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: 4 }}
+							transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+							className='flex flex-col gap-2'
+							style={{ width: 260 }}>
+							<textarea
+								autoFocus
+								placeholder='What could be better?'
+								value={feedbackText}
+								onChange={(e) => setFeedbackText(e.target.value)}
+								rows={3}
+								className='w-full resize-none rounded-xl px-3 py-2.5 text-xs leading-relaxed outline-none'
+								style={{
+									background: "rgba(26,24,23,0.06)",
+									border: "1px solid rgba(26,24,23,0.12)",
+									color: CHARCOAL,
+									fontFamily: "inherit"
+								}}
+							/>
+							<div className='flex items-center gap-2'>
+								<button
+									onClick={() => {
+										if (!feedbackText.trim()) return
+										navigator.clipboard.writeText(feedbackText).catch(() => {})
+										window.open("https://www.linkedin.com/in/tom-teurlings-ab791317b/", "_blank")
+										setFeedbackSent(true)
+										setFeedbackText("")
+										setTimeout(() => { setFeedbackSent(false); setFeedbackOpen(false) }, 4000)
+									}}
+									className='flex-1 rounded-full py-1.5 text-xs font-semibold transition-opacity hover:opacity-80'
+									style={{ background: "#0A66C2", color: "white" }}>
+									Send on LinkedIn
+								</button>
+								<button
+									onClick={() => { setFeedbackOpen(false); setFeedbackText("") }}
+									className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
+									style={{ background: "rgba(26,24,23,0.06)", color: MUTED, border: "1px solid rgba(26,24,23,0.09)" }}>
+									Cancel
+								</button>
+							</div>
+						</m.div>
+					) : (
+						<m.button
+							key='trigger'
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							onClick={() => setFeedbackOpen(true)}
+							className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
+							style={{ background: "rgba(26,24,23,0.06)", color: MUTED, border: "1px solid rgba(26,24,23,0.09)" }}>
+							💬 What could be better?
+						</m.button>
+					)}
+				</AnimatePresence>
+			</div>
 
 			{/* Controls: Mode toggle + Replay */}
 			<div className='absolute bottom-6 right-6 z-20 flex items-center gap-2'>
