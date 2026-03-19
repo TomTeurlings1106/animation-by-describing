@@ -39,15 +39,16 @@ function ClaudeLogo({ size = 36 }: { size?: number }) {
 const HOOK_WORDS = ["What", "if", "making", "animations", "was", "as", "simple", "as", "describing", "them?"]
 const HOOK_HIGHLIGHT: Record<string, boolean> = { animations: true, describing: true }
 
-function HookScreen({ onComplete }: { onComplete: () => void }) {
+function HookScreen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	useEffect(() => {
+		if (mode === "slides") return
 		const t = setTimeout(onComplete, 5500)
 		return () => clearTimeout(t)
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<m.p
-			className='text-[1.55rem] font-semibold leading-snug tracking-[-0.025em]'
+			className='text-[2.5rem] font-semibold leading-snug tracking-[-0.03em]'
 			style={{ color: CHARCOAL }}>
 			{HOOK_WORDS.map((word, i) => (
 				<m.span
@@ -70,16 +71,17 @@ function HookScreen({ onComplete }: { onComplete: () => void }) {
 
 // ─── Bridge ───────────────────────────────────────────────────────────────────
 
-function BridgeScreen({ onComplete }: { onComplete: () => void }) {
+function BridgeScreen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	useEffect(() => {
+		if (mode === "slides") return
 		const t = setTimeout(onComplete, 5000)
 		return () => clearTimeout(t)
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<div className='flex flex-col gap-6'>
 			{/* Streaming intro line */}
-			<p className='text-[1.55rem] font-semibold leading-snug tracking-[-0.025em]' style={{ color: CHARCOAL }}>
+			<p className='text-[2rem] font-semibold leading-snug tracking-[-0.025em]' style={{ color: CHARCOAL }}>
 				{["I'll", "show", "you", "how", "I", "did", "it,", "with"].map((w, i) => (
 					<m.span
 						key={i}
@@ -99,19 +101,19 @@ function BridgeScreen({ onComplete }: { onComplete: () => void }) {
 				className='flex items-center gap-3 flex-wrap'>
 				{/* Claude Code */}
 				<div className='flex items-center gap-2'>
-					<ClaudeLogo size={28} />
-					<span className='text-lg font-semibold tracking-[-0.015em]' style={{ color: CHARCOAL }}>
+					<ClaudeLogo size={32} />
+					<span className='text-xl font-semibold tracking-[-0.015em]' style={{ color: CHARCOAL }}>
 						Claude Code
 					</span>
 				</div>
 
 				{/* Plus */}
-				<span className='text-lg font-semibold' style={{ color: DIM }}>+</span>
+				<span className='text-xl font-semibold' style={{ color: DIM }}>+</span>
 
 				{/* Some creativity */}
 				<div className='flex items-center gap-2'>
 					<span className='text-xl leading-none'>🪄</span>
-					<span className='text-lg font-semibold tracking-[-0.015em]' style={{ color: MUTED }}>
+					<span className='text-xl font-semibold tracking-[-0.015em]' style={{ color: MUTED }}>
 						some creativity
 					</span>
 				</div>
@@ -129,7 +131,7 @@ const TERM_PROMPT = "#D97757"
 const TERM_TEXT = "rgba(255,255,255,0.88)"
 const TERM_DIM = "rgba(255,255,255,0.28)"
 
-function ChatScreen({ onComplete }: { onComplete: () => void }) {
+function ChatScreen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	const [typed, setTyped] = useState("")
 	const [showCursor, setShowCursor] = useState(true)
 	const [showPlaceholder, setShowPlaceholder] = useState(false)
@@ -166,12 +168,12 @@ function ChatScreen({ onComplete }: { onComplete: () => void }) {
 					j++
 				} else {
 					clearInterval(interval)
-					setTimeout(onComplete, 2500)
+					if (mode === "loop") setTimeout(onComplete, 2500)
 				}
 			}, 38)
 			return () => clearInterval(interval)
 		}, 1400)
-	}, [stage, onComplete])
+	}, [stage, onComplete, mode])
 
 	return (
 		<m.div
@@ -179,11 +181,11 @@ function ChatScreen({ onComplete }: { onComplete: () => void }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
 			className='flex flex-col gap-4'>
-			<p className='text-2xl font-semibold leading-snug tracking-[-0.02em]' style={{ color: CHARCOAL }}>
+			<p className='text-3xl font-semibold leading-snug tracking-[-0.025em]' style={{ color: CHARCOAL }}>
 				Here is how I make animations now:
 			</p>
 			<div
-				className='overflow-hidden rounded-xl font-mono text-sm'
+				className='overflow-hidden rounded-xl font-mono text-base'
 				style={{ background: TERM_BG, border: "1px solid rgba(255,255,255,0.07)" }}>
 
 				{/* Input row — highlighted */}
@@ -276,11 +278,12 @@ const STEPS = [
 	{ n: "04", label: "Record or demo as is" }
 ]
 
-function StepsOverviewScreen({ onComplete }: { onComplete: () => void }) {
+function StepsOverviewScreen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	useEffect(() => {
+		if (mode === "slides") return
 		const t = setTimeout(onComplete, 5500)
 		return () => clearTimeout(t)
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<div className='flex flex-col gap-5'>
@@ -289,7 +292,7 @@ function StepsOverviewScreen({ onComplete }: { onComplete: () => void }) {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
 				style={{ color: CHARCOAL }}
-				className='text-2xl font-semibold leading-snug tracking-[-0.02em]'>
+				className='text-3xl font-semibold leading-snug tracking-[-0.025em]'>
 				This is how I set it up.
 			</m.p>
 			<div className='flex flex-col gap-3.5'>
@@ -303,7 +306,7 @@ function StepsOverviewScreen({ onComplete }: { onComplete: () => void }) {
 						<span className='w-5 shrink-0 font-mono text-xs font-semibold' style={{ color: CORAL }}>
 							{step.n}
 						</span>
-						<span className='text-xl font-semibold tracking-[-0.015em]' style={{ color: CHARCOAL }}>
+						<span className='text-2xl font-semibold tracking-[-0.02em]' style={{ color: CHARCOAL }}>
 							{step.label}
 						</span>
 					</m.div>
@@ -341,7 +344,7 @@ function StepWrapper({
 					initial={{ opacity: 0, y: 10 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.07 }}
-					className='text-2xl font-semibold tracking-[-0.02em]'
+					className='text-3xl font-semibold tracking-[-0.025em]'
 					style={{ color: CHARCOAL }}>
 					{label}
 				</m.p>
@@ -349,7 +352,7 @@ function StepWrapper({
 					initial={{ opacity: 0, y: 10 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.14 }}
-					className='text-sm leading-relaxed'
+					className='text-base leading-relaxed'
 					style={{ color: MUTED }}>
 					{description}
 				</m.p>
@@ -366,7 +369,7 @@ function StepWrapper({
 
 // ─── Step 1 — UI component building animation ─────────────────────────────────
 
-function Step1Screen({ onComplete }: { onComplete: () => void }) {
+function Step1Screen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	const [stage, setStage] = useState(0)
 	// 0 → shell, 1 → header, 2 → rows, 3 → button appears top-right, 4 → button moves to bottom
 
@@ -377,9 +380,10 @@ function Step1Screen({ onComplete }: { onComplete: () => void }) {
 			setTimeout(() => setStage(3), 1600),
 			setTimeout(() => setStage(4), 2400)
 		]
+		if (mode === "slides") return () => { timers.forEach(clearTimeout) }
 		const t = setTimeout(onComplete, 6500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<StepWrapper n='01' label='Make the building blocks' description='Use your real product UI. Describe each component — the AI builds it.'>
@@ -461,16 +465,17 @@ const SCRIPT_ITEMS = [
 	"Screen 4 — payoff with your logo"
 ]
 
-function Step2Screen({ onComplete }: { onComplete: () => void }) {
+function Step2Screen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	const [count, setCount] = useState(0)
 
 	useEffect(() => {
 		const timers = SCRIPT_ITEMS.map((_, i) =>
 			setTimeout(() => setCount(i + 1), 400 + i * 650)
 		)
+		if (mode === "slides") return () => { timers.forEach(clearTimeout) }
 		const t = setTimeout(onComplete, 6500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<StepWrapper n='02' label='Write your script' description='Describe each screen in plain language. The order becomes the story.'>
@@ -486,7 +491,7 @@ function Step2Screen({ onComplete }: { onComplete: () => void }) {
 							transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
 							className='flex items-start gap-2'>
 							<span className='mt-0.5 text-xs' style={{ color: CORAL }}>→</span>
-							<span className='text-xs leading-relaxed' style={{ color: CHARCOAL }}>{line}</span>
+							<span className='text-sm leading-relaxed' style={{ color: CHARCOAL }}>{line}</span>
 						</m.div>
 					))}
 				</div>
@@ -497,7 +502,7 @@ function Step2Screen({ onComplete }: { onComplete: () => void }) {
 
 // ─── Step 3 ───────────────────────────────────────────────────────────────────
 
-function Step3Screen({ onComplete }: { onComplete: () => void }) {
+function Step3Screen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	const [stage, setStage] = useState(0)
 	// 0 → empty
 	// 1 → first prompt appears
@@ -514,9 +519,10 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 			setTimeout(() => setStage(4), 2800),
 			setTimeout(() => setStage(5), 3300)
 		]
+		if (mode === "slides") return () => { timers.forEach(clearTimeout) }
 		const t = setTimeout(onComplete, 7500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	const duration = stage >= 2 ? "0.35" : "0.65"
 	const delay = stage >= 4 ? "0.4" : "0"
@@ -531,7 +537,7 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 						initial={{ opacity: 0, y: 6 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-						className='flex items-center gap-2 font-mono text-xs'
+						className='flex items-center gap-2 font-mono text-sm'
 						style={{ color: TERM_PROMPT }}>
 						<span>❯</span>
 						<span>&ldquo;make it snappier&rdquo;</span>
@@ -541,7 +547,7 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 				{/* Code block */}
 				{stage >= 1 && (
 					<div
-						className='rounded-xl px-4 py-3 font-mono text-xs'
+						className='rounded-xl px-4 py-3 font-mono text-sm'
 						style={{ background: "rgba(26,24,23,0.05)", border: "1px solid rgba(26,24,23,0.08)" }}>
 						<span style={{ color: DIM }}>transition: &#123;</span><br />
 						<span className='ml-4' style={{ color: MUTED }}>duration: </span>
@@ -570,7 +576,7 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 						initial={{ opacity: 0, y: 6 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-						className='flex items-center gap-2 font-mono text-xs'
+						className='flex items-center gap-2 font-mono text-sm'
 						style={{ color: TERM_PROMPT }}>
 						<span>❯</span>
 						<span>&ldquo;add a pause between steps&rdquo;</span>
@@ -583,7 +589,7 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 						initial={{ opacity: 0, y: 6 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-						className='text-xs'
+						className='text-sm'
 						style={{ color: DIM }}>
 						Two messages. Two saves. Done.
 					</m.p>
@@ -595,20 +601,21 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 
 // ─── Step 4 ───────────────────────────────────────────────────────────────────
 
-function Step4Screen({ onComplete }: { onComplete: () => void }) {
+function Step4Screen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	const [recording, setRecording] = useState(false)
 	const [showNote, setShowNote] = useState(false)
 
 	useEffect(() => {
 		const t1 = setTimeout(() => setRecording(true), 1800)
 		const t2 = setTimeout(() => setShowNote(true), 2300)
+		if (mode === "slides") return () => { clearTimeout(t1); clearTimeout(t2) }
 		const t3 = setTimeout(onComplete, 6000)
 		return () => {
 			clearTimeout(t1)
 			clearTimeout(t2)
 			clearTimeout(t3)
 		}
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<StepWrapper n='04' label='Record or demo as is' description='Navigate to the page. Screen record or share the URL directly.'>
@@ -661,11 +668,12 @@ function Step4Screen({ onComplete }: { onComplete: () => void }) {
 
 // ─── Payoff ───────────────────────────────────────────────────────────────────
 
-function PayoffScreen({ onComplete }: { onComplete: () => void }) {
+function PayoffScreen({ onComplete, mode }: { onComplete: () => void; mode: "loop" | "slides" }) {
 	useEffect(() => {
+		if (mode === "slides") return
 		const t = setTimeout(onComplete, 6000)
 		return () => clearTimeout(t)
-	}, [onComplete])
+	}, [onComplete, mode])
 
 	return (
 		<m.div
@@ -673,10 +681,10 @@ function PayoffScreen({ onComplete }: { onComplete: () => void }) {
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
 			className='text-center'>
-			<p className='text-2xl font-semibold tracking-[-0.02em]' style={{ color: CHARCOAL }}>
+			<p className='text-4xl font-semibold tracking-[-0.03em]' style={{ color: CHARCOAL }}>
 				You just watched the proof.
 			</p>
-			<p className='mt-2 text-sm' style={{ color: MUTED }}>
+			<p className='mt-3 text-lg' style={{ color: MUTED }}>
 				Built exactly this way.
 			</p>
 		</m.div>
@@ -695,6 +703,7 @@ const CONTENT_PHASES: Phase[] = ["hook", "bridge", "chat", "steps", "step1", "st
 export default function VideoAnimationStoryPage() {
 	const [phase, setPhase] = useState<Phase>("hook")
 	const [loopKey, setLoopKey] = useState(0)
+	const [mode, setMode] = useState<"loop" | "slides">("loop")
 
 	useEffect(() => {
 		const html = document.documentElement
@@ -760,7 +769,7 @@ export default function VideoAnimationStoryPage() {
 							animate={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
 							style={{ color }}
-							className='text-[1.75rem] font-semibold tracking-[-0.03em]'>
+							className='text-[2.75rem] font-semibold tracking-[-0.03em]'>
 							{text}
 						</m.p>
 					))}
@@ -813,7 +822,7 @@ export default function VideoAnimationStoryPage() {
 			</div>
 
 			{/* Content */}
-			<div className='relative z-10 w-full max-w-lg px-8'>
+			<div className='relative z-10 w-full max-w-2xl px-12'>
 				<AnimatePresence mode='wait'>
 					{CONTENT_PHASES.concat("done" as Phase).map(
 						(p) =>
