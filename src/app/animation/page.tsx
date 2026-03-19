@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react"
 import { m, AnimatePresence } from "motion/react"
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
+// ─── Design tokens — swap these for your brand colors ─────────────────────────
 
-const CORAL = "#D97757"
-const CHARCOAL = "#1A1817"
-const MUTED = "rgba(26,24,23,0.45)"
-const DIM = "rgba(26,24,23,0.22)"
-const BG = "#F5F3EE"
+const CORAL = "#D97757"                  // accent / highlight / CTAs
+const CHARCOAL = "#1A1817"               // primary text
+const MUTED = "rgba(26,24,23,0.45)"      // secondary text
+const DIM = "rgba(26,24,23,0.22)"        // captions / tertiary
+const BG = "#F5F3EE"                     // page background
 
 // ─── Claude logo — starburst icon ────────────────────────────────────────────
 
@@ -33,14 +33,15 @@ function ClaudeLogo({ size = 36 }: { size?: number }) {
 	)
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+// ─── Hook — your opening question, staggered word by word ─────────────────────
+// ↓ Replace with your hook. Words in HOOK_HIGHLIGHT get coral underline emphasis.
 
 const HOOK_WORDS = ["What", "if", "making", "animations", "was", "as", "simple", "as", "describing", "them?"]
 const HOOK_HIGHLIGHT: Record<string, boolean> = { animations: true, describing: true }
 
 function HookScreen({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
-		const t = setTimeout(onComplete, 3500)
+		const t = setTimeout(onComplete, 5500)
 		return () => clearTimeout(t)
 	}, [onComplete])
 
@@ -71,7 +72,7 @@ function HookScreen({ onComplete }: { onComplete: () => void }) {
 
 function BridgeScreen({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
-		const t = setTimeout(onComplete, 3500)
+		const t = setTimeout(onComplete, 5000)
 		return () => clearTimeout(t)
 	}, [onComplete])
 
@@ -134,7 +135,7 @@ function ChatScreen({ onComplete }: { onComplete: () => void }) {
 	const [showPlaceholder, setShowPlaceholder] = useState(false)
 	const [stage, setStage] = useState<"typing" | "concocting" | "done">("typing")
 	const [responseText, setResponseText] = useState("")
-	const RESPONSE = "localhost:3000/demo"
+	const RESPONSE = "localhost:3000/my-animation"
 
 	// Stage 1 — type the prompt
 	useEffect(() => {
@@ -165,7 +166,7 @@ function ChatScreen({ onComplete }: { onComplete: () => void }) {
 					j++
 				} else {
 					clearInterval(interval)
-					setTimeout(onComplete, 1200)
+					setTimeout(onComplete, 2500)
 				}
 			}, 38)
 			return () => clearInterval(interval)
@@ -265,6 +266,9 @@ function ChatScreen({ onComplete }: { onComplete: () => void }) {
 
 // ─── Steps overview ───────────────────────────────────────────────────────────
 
+// ─── Steps — your numbered list, shown as the overview and then one-by-one ────
+// ↓ Replace with your steps.
+
 const STEPS = [
 	{ n: "01", label: "Make the building blocks" },
 	{ n: "02", label: "Write your script" },
@@ -274,7 +278,7 @@ const STEPS = [
 
 function StepsOverviewScreen({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
-		const t = setTimeout(onComplete, 3500)
+		const t = setTimeout(onComplete, 5500)
 		return () => clearTimeout(t)
 	}, [onComplete])
 
@@ -373,7 +377,7 @@ function Step1Screen({ onComplete }: { onComplete: () => void }) {
 			setTimeout(() => setStage(3), 1600),
 			setTimeout(() => setStage(4), 2400)
 		]
-		const t = setTimeout(onComplete, 4200)
+		const t = setTimeout(onComplete, 6500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
 	}, [onComplete])
 
@@ -464,7 +468,7 @@ function Step2Screen({ onComplete }: { onComplete: () => void }) {
 		const timers = SCRIPT_ITEMS.map((_, i) =>
 			setTimeout(() => setCount(i + 1), 400 + i * 650)
 		)
-		const t = setTimeout(onComplete, 4200)
+		const t = setTimeout(onComplete, 6500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
 	}, [onComplete])
 
@@ -510,7 +514,7 @@ function Step3Screen({ onComplete }: { onComplete: () => void }) {
 			setTimeout(() => setStage(4), 2800),
 			setTimeout(() => setStage(5), 3300)
 		]
-		const t = setTimeout(onComplete, 4800)
+		const t = setTimeout(onComplete, 7500)
 		return () => { timers.forEach(clearTimeout); clearTimeout(t) }
 	}, [onComplete])
 
@@ -598,7 +602,7 @@ function Step4Screen({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
 		const t1 = setTimeout(() => setRecording(true), 1800)
 		const t2 = setTimeout(() => setShowNote(true), 2300)
-		const t3 = setTimeout(onComplete, 4000)
+		const t3 = setTimeout(onComplete, 6000)
 		return () => {
 			clearTimeout(t1)
 			clearTimeout(t2)
@@ -659,58 +663,29 @@ function Step4Screen({ onComplete }: { onComplete: () => void }) {
 
 function PayoffScreen({ onComplete }: { onComplete: () => void }) {
 	useEffect(() => {
-		const t = setTimeout(onComplete, 4000)
+		const t = setTimeout(onComplete, 6000)
 		return () => clearTimeout(t)
 	}, [onComplete])
 
 	return (
-		<div className='flex flex-col items-start gap-7'>
-			<m.div
-				initial={{ opacity: 0, y: 10 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-				className='flex items-center gap-3'>
-				<ClaudeLogo size={42} />
-				<div>
-					<p className='text-base font-semibold tracking-[-0.01em]' style={{ color: CHARCOAL }}>
-						Claude Code
-					</p>
-					<p className='text-xs' style={{ color: MUTED }}>
-						by Anthropic
-					</p>
-				</div>
-			</m.div>
-			<div className='flex flex-col gap-2'>
-				{(
-					[
-						[0.18, "Claude Code.", CHARCOAL],
-						[0.38, "Some creativity.", MUTED]
-					] as const
-				).map(([delay, text, color]) => (
-					<m.p
-						key={text}
-						initial={{ opacity: 0, y: 14 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
-						style={{ color }}
-						className='text-[1.75rem] font-semibold tracking-[-0.03em]'>
-						{text}
-					</m.p>
-				))}
-				<m.p
-					initial={{ opacity: 0, y: 14 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.58 }}
-					className='mt-2 font-mono text-xs'
-					style={{ color: DIM }}>
-					{"// github.com/{your-repo}"}
-				</m.p>
-			</div>
-		</div>
+		<m.div
+			initial={{ opacity: 0, y: 12 }}
+			animate={{ opacity: 1, y: 0 }}
+			transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+			className='text-center'>
+			<p className='text-2xl font-semibold tracking-[-0.02em]' style={{ color: CHARCOAL }}>
+				You just watched the proof.
+			</p>
+			<p className='mt-2 text-sm' style={{ color: MUTED }}>
+				Built exactly this way.
+			</p>
+		</m.div>
 	)
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types — add/remove phases to match your screen count ─────────────────────
+// Each phase maps to a screen component below. "done" is the auto-loop state.
+// CONTENT_PHASES drives the progress dots — one dot per entry.
 
 type Phase = "hook" | "bridge" | "chat" | "steps" | "step1" | "step2" | "step3" | "step4" | "payoff" | "done"
 const CONTENT_PHASES: Phase[] = ["hook", "bridge", "chat", "steps", "step1", "step2", "step3", "step4", "payoff"]
@@ -735,7 +710,7 @@ export default function VideoAnimationStoryPage() {
 		const t = setTimeout(() => {
 			setPhase("hook")
 			setLoopKey((k) => k + 1)
-		}, 3000)
+		}, 5000)
 		return () => clearTimeout(t)
 	}, [phase])
 
@@ -771,21 +746,34 @@ export default function VideoAnimationStoryPage() {
 		step4: <Step4Screen onComplete={() => setPhase(next.step4)} />,
 		payoff: <PayoffScreen onComplete={() => setPhase(next.payoff)} />,
 		done: (
-			<m.div
-				initial={{ opacity: 0, y: 12 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-				className='text-center'>
-				<p className='text-2xl font-semibold tracking-[-0.02em]' style={{ color: CHARCOAL }}>
-					You just watched the proof.
-				</p>
-				<p className='mt-2 text-sm' style={{ color: MUTED }}>
-					Built exactly this way.
-				</p>
-				<p className='mt-5 font-mono text-xs' style={{ color: DIM }}>
-					{"// github.com/{your-repo}"}
-				</p>
-			</m.div>
+			<div className='flex flex-col items-start gap-7'>
+				<div className='flex flex-col gap-2'>
+					{(
+						[
+							[0.18, "Claude Code.", CHARCOAL],
+							[0.38, "Some creativity.", MUTED]
+						] as const
+					).map(([delay, text, color]) => (
+						<m.p
+							key={text}
+							initial={{ opacity: 0, y: 14 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay }}
+							style={{ color }}
+							className='text-[1.75rem] font-semibold tracking-[-0.03em]'>
+							{text}
+						</m.p>
+					))}
+					<m.p
+						initial={{ opacity: 0, y: 14 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.58 }}
+						className='mt-2 font-mono text-xs'
+						style={{ color: CORAL }}>
+						{"// github.com/{your-repo}"}
+					</m.p>
+				</div>
+			</div>
 		)
 	}
 
