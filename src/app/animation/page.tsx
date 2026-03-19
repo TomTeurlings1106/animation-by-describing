@@ -715,13 +715,13 @@ export default function VideoAnimationStoryPage() {
 	}, [])
 
 	useEffect(() => {
-		if (phase !== "done") return
+		if (phase !== "done" || mode !== "loop") return
 		const t = setTimeout(() => {
 			setPhase("hook")
 			setLoopKey((k) => k + 1)
 		}, 5000)
 		return () => clearTimeout(t)
-	}, [phase])
+	}, [phase, mode])
 
 	const next: Record<Exclude<Phase, "done">, Phase> = {
 		hook: "bridge",
@@ -735,6 +735,25 @@ export default function VideoAnimationStoryPage() {
 		payoff: "done"
 	}
 
+	// Keyboard + click-to-advance (slides mode only)
+	useEffect(() => {
+		if (mode !== "slides") return
+		const advance = () => {
+			if (phase === "done") { setPhase("hook"); setLoopKey((k) => k + 1); return }
+			setPhase(next[phase as Exclude<Phase, "done">])
+		}
+		const back = () => {
+			const i = CONTENT_PHASES.indexOf(phase as Exclude<Phase, "done">)
+			if (i > 0) setPhase(CONTENT_PHASES[i - 1])
+		}
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); advance() }
+			if (e.key === "ArrowLeft") back()
+		}
+		window.addEventListener("keydown", onKey)
+		return () => window.removeEventListener("keydown", onKey)
+	}, [mode, phase])
+
 	const slide = {
 		initial: { x: 160, opacity: 0 },
 		animate: { x: 0, opacity: 1 },
@@ -742,18 +761,24 @@ export default function VideoAnimationStoryPage() {
 		transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] }
 	} as const
 
-	const dotIndex = CONTENT_PHASES.indexOf(phase)
+	const dotIndex = CONTENT_PHASES.indexOf(phase as Exclude<Phase, "done">)
+
+	const handleContentClick = () => {
+		if (mode !== "slides") return
+		if (phase === "done") { setPhase("hook"); setLoopKey((k) => k + 1); return }
+		setPhase(next[phase as Exclude<Phase, "done">])
+	}
 
 	const screens: Partial<Record<Phase, React.ReactNode>> = {
-		hook: <HookScreen onComplete={() => setPhase(next.hook)} />,
-		bridge: <BridgeScreen onComplete={() => setPhase(next.bridge)} />,
-		chat: <ChatScreen onComplete={() => setPhase(next.chat)} />,
-		steps: <StepsOverviewScreen onComplete={() => setPhase(next.steps)} />,
-		step1: <Step1Screen onComplete={() => setPhase(next.step1)} />,
-		step2: <Step2Screen onComplete={() => setPhase(next.step2)} />,
-		step3: <Step3Screen onComplete={() => setPhase(next.step3)} />,
-		step4: <Step4Screen onComplete={() => setPhase(next.step4)} />,
-		payoff: <PayoffScreen onComplete={() => setPhase(next.payoff)} />,
+		hook: <HookScreen onComplete={() => setPhase(next.hook)} mode={mode} />,
+		bridge: <BridgeScreen onComplete={() => setPhase(next.bridge)} mode={mode} />,
+		chat: <ChatScreen onComplete={() => setPhase(next.chat)} mode={mode} />,
+		steps: <StepsOverviewScreen onComplete={() => setPhase(next.steps)} mode={mode} />,
+		step1: <Step1Screen onComplete={() => setPhase(next.step1)} mode={mode} />,
+		step2: <Step2Screen onComplete={() => setPhase(next.step2)} mode={mode} />,
+		step3: <Step3Screen onComplete={() => setPhase(next.step3)} mode={mode} />,
+		step4: <Step4Screen onComplete={() => setPhase(next.step4)} mode={mode} />,
+		payoff: <PayoffScreen onComplete={() => setPhase(next.payoff)} mode={mode} />,
 		done: (
 			<div className='flex flex-col items-start gap-7'>
 				<div className='flex flex-col gap-2'>
@@ -798,12 +823,16 @@ export default function VideoAnimationStoryPage() {
 				}}
 			/>
 
-			{/* Claude logo — always visible */}
-			<div className='absolute top-5 left-6 z-20 flex items-center gap-2'>
-				<ClaudeLogo size={22} />
-				<span className='text-xs font-semibold tracking-[-0.01em]' style={{ color: CHARCOAL }}>
-					Claude Code
-				</span>
+			{/* LinkedIn CTA */}
+			<div className='absolute top-5 left-6 z-20'>
+				<a
+					href='https://www.linkedin.com/in/tom-teurlings-ab791317b/'
+					target='_blank'
+					rel='noopener noreferrer'
+					className='text-xs font-medium transition-opacity hover:opacity-60'
+					style={{ color: MUTED }}>
+					Let me know if you like it and what could be better on LinkedIn
+				</a>
 			</div>
 
 			{/* Progress dots */}
@@ -822,7 +851,10 @@ export default function VideoAnimationStoryPage() {
 			</div>
 
 			{/* Content */}
-			<div className='relative z-10 w-full max-w-2xl px-12'>
+			<div
+				className='relative z-10 w-full max-w-2xl px-12'
+				onClick={handleContentClick}
+				style={{ cursor: mode === "slides" ? "pointer" : "default" }}>
 				<AnimatePresence mode='wait'>
 					{CONTENT_PHASES.concat("done" as Phase).map(
 						(p) =>
@@ -835,20 +867,47 @@ export default function VideoAnimationStoryPage() {
 				</AnimatePresence>
 			</div>
 
-			{/* Replay */}
-			<button
-				onClick={() => {
-					setPhase("hook")
-					setLoopKey((k) => k + 1)
-				}}
-				className='absolute bottom-6 right-6 z-20 rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
-				style={{
-					background: "rgba(26,24,23,0.06)",
-					color: MUTED,
-					border: "1px solid rgba(26,24,23,0.09)"
-				}}>
-				↺ Replay
-			</button>
+			{/* Slides mode hint */}
+			<AnimatePresence>
+				{mode === "slides" && (
+					<m.p
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.4 }}
+						className='absolute bottom-6 left-1/2 z-20 -translate-x-1/2 font-mono text-xs'
+						style={{ color: DIM }}>
+						← → to navigate
+					</m.p>
+				)}
+			</AnimatePresence>
+
+			{/* Controls: Mode toggle + Replay */}
+			<div className='absolute bottom-6 right-6 z-20 flex items-center gap-2'>
+				<button
+					onClick={() => setMode((m) => m === "loop" ? "slides" : "loop")}
+					className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
+					style={{
+						background: "rgba(26,24,23,0.06)",
+						color: MUTED,
+						border: "1px solid rgba(26,24,23,0.09)"
+					}}>
+					{mode === "loop" ? "⊞ Slides" : "↺ Loop"}
+				</button>
+				<button
+					onClick={() => {
+						setPhase("hook")
+						setLoopKey((k) => k + 1)
+					}}
+					className='rounded-full px-3 py-1.5 text-xs font-medium transition-opacity hover:opacity-60'
+					style={{
+						background: "rgba(26,24,23,0.06)",
+						color: MUTED,
+						border: "1px solid rgba(26,24,23,0.09)"
+					}}>
+					↺ Replay
+				</button>
+			</div>
 		</div>
 	)
 }
