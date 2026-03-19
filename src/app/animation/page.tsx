@@ -804,7 +804,7 @@ export default function VideoAnimationStoryPage() {
 						transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.58 }}
 						className='mt-2 font-mono text-xs'
 						style={{ color: CORAL }}>
-						{"// github.com/{your-repo}"}
+						{"// github.com/TomTeurlings1106/animation-by-describing"}
 					</m.p>
 				</div>
 			</div>
