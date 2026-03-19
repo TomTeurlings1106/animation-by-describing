@@ -831,7 +831,7 @@ export default function VideoAnimationStoryPage() {
 					rel='noopener noreferrer'
 					className='text-xs font-medium transition-opacity hover:opacity-60'
 					style={{ color: MUTED }}>
-					Let me know if you like it and what could be better on LinkedIn
+					Connect and see more like this on LinkedIn
 				</a>
 			</div>
 
