@@ -2,7 +2,7 @@
 
 Make product animations by describing them — no After Effects, no Figma, just a conversation with Claude Code.
 
-**See it live:** [github.com/TomTeurlings1106/animation-by-describing](https://github.com/TomTeurlings1106/animation-by-describing) → navigate to `/animation`
+**See it live:** [github.com/TomTeurlings1106/animation-by-describing](https://github.com/TomTeurlings1106/animation-by-describing) → navigate to `/my-animation`
 
 ---
 
